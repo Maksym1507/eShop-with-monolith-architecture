@@ -1,0 +1,38 @@
+version: '3.4'
+
+services:
+    sql-server:
+        image: mcr.microsoft.com/mssql/server
+        environment:
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "Qwerty_12345"
+        ports:
+            - "1433:1433"
+    backend:
+        build:
+            context: ./WebApi/WebApi
+        ports: 
+            - "44311:44311"
+        environment:
+            DBServer: "sql-server"
+            DBPort: "1433"
+            DBPassword: "Qwerty_12345"
+            DBUser: "sa"
+            DBName: "PizzaShop"
+    identityserver4:
+        build:
+            context: ./IdentityServer4/IdentiyServer4
+        ports:
+            - "44356:44356"
+        environment:
+            DBServer: "sql-server"
+            DBPort: "1433"
+            DBPassword: "Qwerty_12345"
+            DBUser: "sa"
+            DBName: "PizzaShop"        
+    client:
+        image: diplom_frontend
+        build:
+            context: ./m5-hw6-7-master
+        ports:
+            - "3000:3000"
